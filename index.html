@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Task Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Student Task Platform</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" id="dashboard-link">Dashboard</a></li>
+                    <li><a href="#" id="tasks-link">Tasks</a></li>
+                    <li><a href="#" id="submissions-link">Submissions</a></li>
+                    <li><a href="#" id="leaderboard-link">Leaderboard</a></li>
+                    <li class="facilitator-only" style="display:none;"><a href="#" id="users-link">User Management</a></li>
+                    <li id="auth-buttons">
+                        <button id="login-btn">Login</button>
+                        <button id="logout-btn" style="display:none;">Logout</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Login Modal -->
+        <div id="login-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-role">Role</label>
+                        <select id="login-role" required>
+                            <option value="">Select Role</option>
+                            <option value="student">Student</option>
+                            <option value="facilitator">School Facilitator</option>
+                        </select>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section">
+            <h2>Welcome, <span id="welcome-name"></span></h2>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Your Points</h3>
+                    <p id="user-points">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Tasks Completed</h3>
+                    <p id="tasks-completed">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Approvals</h3>
+                    <p id="pending-approvals">0</p>
+                </div>
+            </div>
+            <div id="recent-tasks">
+                <h3>Recent Tasks</h3>
+                <div class="tasks-grid" id="recent-tasks-grid"></div>
+            </div>
+        </section>
+
+        <!-- Tasks Section -->
+        <section id="tasks-section" style="display:none;">
+            <div class="section-header">
+                <h2>Available Tasks</h2>
+                <div class="filter-controls">
+                    <select id="task-type-filter">
+                        <option value="all">All Types</option>
+                        <option value="social">Social Media</option>
+                        <option value="data">Data Entry</option>
+                        <option value="content">Content Moderation</option>
+                        <option value="class">Class Task</option>
+                        <option value="home">Home Task</option>
+                    </select>
+                    <select id="task-status-filter">
+                        <option value="all">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                    <select id="task-sort">
+                        <option value="newest">Newest First</option>
+                        <option value="deadline">Closest Deadline</option>
+                        <option value="points">Most Points</option>
+                    </select>
+                    <button id="add-task-btn" class="facilitator-only" style="display:none;">Add New Task</button>
+                </div>
+            </div>
+            <div class="tasks-grid" id="tasks-grid"></div>
+        </section>
+
+        <!-- Add Task Modal -->
+        <div id="add-task-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Add New Task</h2>
+                <form id="add-task-form">
+                    <div class="form-group">
+                        <label for="task-title">Title</label>
+                        <input type="text" id="task-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">Description</label>
+                        <textarea id="task-description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-type">Type</label>
+                        <select id="task-type" required>
+                            <option value="">Select Type</option>
+                            <option value="social">Social Media Action</option>
+                            <option value="data">Data Entry</option>
+                            <option value="content">Content Moderation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-category">Category</label>
+                        <select id="task-category" required>
+                            <option value="class">Class Task</option>
+                            <option value="home">Home Task</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-points">Points</label>
+                        <input type="number" id="task-points" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-deadline">Deadline</label>
+                        <input type="date" id="task-deadline" required>
+                    </div>
+                    <button type="submit">Create Task</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Task Detail Modal -->
+        <div id="task-detail-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="task-detail-title"></h2>
+                <div class="task-meta">
+                    <span id="task-detail-type"></span>
+                    <span id="task-detail-category"></span>
+                    <span id="task-detail-points"></span>
+                    <span id="task-detail-deadline"></span>
+                    <span id="task-detail-status"></span>
+                </div>
+                <p id="task-detail-description"></p>
+                <div id="task-actions">
+                    <form id="submit-task-form" class="student-only" style="display:none;">
+                        <div class="form-group">
+                            <label for="submission-proof">Submit Proof (URL or text description)</label>
+                            <textarea id="submission-proof" required></textarea>
+                        </div>
+                        <button type="submit">Submit Task</button>
+                    </form>
+                    <div id="facilitator-actions" class="facilitator-only" style="display:none;">
+                        <button id="edit-task-btn">Edit Task</button>
+                        <button id="delete-task-btn">Delete Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submissions Section -->
+        <section id="submissions-section" style="display:none;">
+            <h2>Your Submissions</h2>
+            <div class="submissions-grid" id="submissions-grid"></div>
+        </section>
+
+        <!-- Facilitator Submissions Section -->
+        <section id="facilitator-submissions-section" style="display:none;">
+            <h2>Student Submissions</h2>
+            <div class="submissions-grid" id="facilitator-submissions-grid"></div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard-section" style="display:none;">
+            <h2>Leaderboard</h2>
+            <table id="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Student</th>
+                        <th>Points</th>
+                        <th>Tasks Completed</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Leaderboard data will be inserted here -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- User Management Section -->
+        <section id="user-management-section" class="facilitator-only" style="display:none;">
+            <h2>User Management</h2>
+            <button id="add-user-btn">Add New User</button>
+            <table id="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Points</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                    <!-- Users will be listed here -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Add User Modal -->
+        <div id="add-user-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Add New User</h2>
+                <form id="add-user-form">
+                    <div class="form-group">
+                        <label for="user-name">Full Name</label>
+                        <input type="text" id="user-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-email">Email</label>
+                        <input type="email" id="user-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-password">Password</label>
+                        <input type="password" id="user-password" required>
+                        <div class="password-strength-meter">
+                            <div id="password-strength-indicator" class="password-strength-indicator"></div>
+                        </div>
+                        <small class="password-requirements">
+                            Password must be at least 8 characters long and contain at least one number and one special character.
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-confirm-password">Confirm Password</label>
+                        <input type="password" id="user-confirm-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-role">Role</label>
+                        <select id="user-role" required>
+                            <option value="student">Student</option>
+                            <option value="facilitator">Facilitator</option>
+                        </select>
+                    </div>
+                    <button type="submit">Create User</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Student Task Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
